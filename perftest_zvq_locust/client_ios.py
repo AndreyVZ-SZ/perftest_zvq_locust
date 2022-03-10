@@ -97,15 +97,15 @@ class IosUser01(TaskSet):
     def tiny_grid(self):
         switcher = random.randint(1, 5)
         if switcher == 1:
-            self.client.get("/api/tiny/grid", params={"name": "zvuk-home", "market": "ru"})
+            self.client.get("/api/tiny/grid", params={"name": "zvuk-home", "market": "ru"}, name='/api/tiny/grid')
         elif switcher == 2:
-            self.client.get("/api/tiny/grid", params={"name": "grid_search", "market": "ru"})
+            self.client.get("/api/tiny/grid", params={"name": "grid_search", "market": "ru"}, name='/api/tiny/grid')
         elif switcher == 3:
-            self.client.get("/api/tiny/grid", params={"name": "new_2021_grid", "market": "ru"})
+            self.client.get("/api/tiny/grid", params={"name": "new_2021_grid", "market": "ru"}, name='/api/tiny/grid')
         elif switcher == 4:
-            self.client.get("/api/tiny/grid", params={"name": "grid-podcasts", "market": "ru"})
+            self.client.get("/api/tiny/grid", params={"name": "grid-podcasts", "market": "ru"}, name='/api/tiny/grid')
         elif switcher == 5:
-            self.client.get("/api/tiny/grid", params={"name": "zvuk-editorial_waves", "market": "ru"})
+            self.client.get("/api/tiny/grid", params={"name": "zvuk-editorial_waves", "market": "ru"}, name='/api/tiny/grid')
 
     @task(1)
     def tiny_grid_recommendations(self):

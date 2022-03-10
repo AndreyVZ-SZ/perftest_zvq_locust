@@ -53,9 +53,9 @@ def web_login(self):
     time.sleep(1)
     self.client.get("/api/tiny/subscription", params={"app": "zvooq"})
     time.sleep(1)
-    self.client.get("/sapi/grid", params={"name": "zvuk_grid_main"})
+    self.client.get("/sapi/grid", params={"name": "zvuk_grid_main"}, name='/sapi/grid')
     time.sleep(1)
-    self.client.get("/sapi/grid", params={"name": "zvuk_grid_main_custom_ad"})
+    self.client.get("/sapi/grid", params={"name": "zvuk_grid_main_custom_ad"}, name='/sapi/grid')
     time.sleep(1)
 
 
@@ -98,7 +98,7 @@ class WebUser01(TaskSet):
             choice_item = random.choice(([1062105], [1124972]))
             GQL.get_playlists(self, ids=choice_item, shortTrackList=False, limNumber=3, country_code="ru")
         elif switcher == 5:
-            GQL.get_profile(self, ids=[438616750, 371954642, 420633244, 514072620, 386097314, 388922123, 297277082,
+            GQL.profile(self, ids=[438616750, 371954642, 420633244, 514072620, 386097314, 388922123, 297277082,
                                        438619873, 471759800, 438618754, 331771699, 506527198], country_code="ru")
         elif switcher == 6:
             choice_item = random.choice((115020184, 115025877))
@@ -112,15 +112,15 @@ class WebUser01(TaskSet):
     def grid_request(self):
         switcher = random.randint(1, 5)
         if switcher == 1:
-            self.client.get("/sapi/grid", params={"name": "zvuk_grid_main"})
+            self.client.get("/sapi/grid", params={"name": "zvuk_grid_main"}, name='/sapi/grid')
         elif switcher == 2:
-            self.client.get("/sapi/grid", params={"name": "zvuk_grid_main_custom_ad"})
+            self.client.get("/sapi/grid", params={"name": "zvuk_grid_main_custom_ad"}, name='/sapi/grid')
         elif switcher == 3:
-            self.client.get("/sapi/grid", params={'name': 'zvuk_grid_top100'})
+            self.client.get("/sapi/grid", params={'name': 'zvuk_grid_top100'}, name='/sapi/grid')
         elif switcher == 4:
-            self.client.get("/sapi/grid", params={'name': 'zvuk_grid_errors'})
+            self.client.get("/sapi/grid", params={'name': 'zvuk_grid_errors'}, name='/sapi/grid')
         else:
-            self.client.get("/sapi/grid", params={'name': 'grid_web_new_playlists'})
+            self.client.get("/sapi/grid", params={'name': 'grid_web_new_playlists'}, name='/sapi/grid')
 
     @task(3)
     def sapi_meta_request(self):

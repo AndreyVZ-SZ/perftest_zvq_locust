@@ -6,6 +6,24 @@ class GQL:
     def choose_operation(self):
         pass
 
+    #------Android-------
+
+
+    def collection_ids(self):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "collectionIds",
+                                        "variables": {},
+                                        "query": "query collectionIds { collection { __typename tracks { __typename ...CollectionItemGqlFragment } artists { __typename ...CollectionItemGqlFragment } releases { __typename ...CollectionItemGqlFragment } playlists { __typename ...CollectionItemGqlFragment } books { __typename ...CollectionItemGqlFragment } chapters { __typename ...CollectionItemGqlFragment } episodes { __typename ...CollectionItemGqlFragment } profiles { __typename ...CollectionItemGqlFragment } } getPlayState { __typename episodes chapters } hidden_collection { __typename tracks { __typename ...HiddenItemGqlFragment } artists { __typename ...HiddenItemGqlFragment } } } fragment CollectionItemGqlFragment on CollectionItem { __typename id collectionLastModified } fragment HiddenItemGqlFragment on CollectionItem { __typename id collectionLastModified }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql (droid collectionIds)'
+                                    )
+        return response
+
+
     #-------IOS----------
 
     def get_wave_content(self):
@@ -577,7 +595,7 @@ class GQL:
                                     )
         return response
 
-    def get_profile(self, ids, country_code="ru"):
+    def profile(self, ids, country_code="ru"):
         response = self.client.post("/api/v1/graphql",
                                     json={
                                         'operationName': 'profile',
@@ -603,7 +621,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (getProfiles)'
+                                    name='/api/v1/graphql (profile)'
                                     )
         return response
 

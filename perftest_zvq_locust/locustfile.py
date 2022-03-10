@@ -10,6 +10,7 @@ from locust import HttpUser, TaskSet, task, between
 
 from client_web import WebUser01, WebUser02
 from client_ios import IosUser01
+from client_android import AndroidUser01
 
 
 #user_reader = CSVReader("resources/user_login.csv")
@@ -21,5 +22,5 @@ class FlowException(Exception):
 
 class ZvukUser(HttpUser):
     host = "https://sber-zvuk.com"
-    wait_time = between(0.5, 1)
-    tasks = [WebUser01, IosUser01]
+    wait_time = between(0.3, 1)
+    tasks = [AndroidUser01]
