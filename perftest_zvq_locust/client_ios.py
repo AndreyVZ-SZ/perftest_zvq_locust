@@ -8,6 +8,7 @@ from locust import TaskSet, task
 from graphql import GQL
 from methods import *
 from vuser import *
+from weight import weight
 
 
 def ios_login(self):
@@ -22,13 +23,17 @@ def ios_login(self):
                     params={
                         'include': '(track release)',
                         'url': '/api/tiny/listen-next/?ids=&limit=10'},
-                    name='/sapi/fetch/ (include)')
+                    name='/sapi/fetch/')
     time.sleep(1)
     res = self.client.post("/api/tiny/login/email",
                            params={'register': '1'},
                            data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
-                           headers={'content-type': 'application/x-www-form-urlencoded'})
+                           headers={'content-type': 'application/x-www-form-urlencoded'},
+                           name="/api/tiny/login/email")
+    check_response(res)
+
     headers_ios_set_token(self, res.json()['result']['token'])
+    logging.info(str(res.json()))
     res = self.client.get("/api/v2/tiny/profile/")
     self.user_id = str(res.json()['result']['profile']['id'])
 
@@ -56,12 +61,16 @@ class IosUser01(TaskSet):
              })
         ios_login(self)
 
-    @task(1)
+    @task(weight["/api/ads/next/v2"])
     def ads_next_v2(self):
         self.client.get("/api/ads/next/v2")
 
-    @task(9)
-    def graphql_req(self):
+    @task(weight["/api/v2/tiny/profile/"])
+    def api_v2_tiny_profile(self):
+        self.client.get("/api/v2/tiny/profile/")
+
+    @task(weight["/api/tiny/graphql"])
+    def graphql(self):
         switcher = random.randint(1, 9)
         if switcher == 1:
             choice_item = random.choice((["746246625"], ["717993527"], ["438619873"],
@@ -93,7 +102,7 @@ class IosUser01(TaskSet):
         elif switcher == 9:
             GQL.get_wave_content(self)
 
-    @task(5)
+    @task(weight["/api/tiny/grid"])
     def tiny_grid(self):
         switcher = random.randint(1, 5)
         if switcher == 1:
@@ -107,16 +116,16 @@ class IosUser01(TaskSet):
         elif switcher == 5:
             self.client.get("/api/tiny/grid", params={"name": "zvuk-editorial_waves", "market": "ru"}, name='/api/tiny/grid')
 
-    @task(1)
+    @task(weight["/api/tiny/grid/recommendations"])
     def tiny_grid_recommendations(self):
-        self.client.get("/api/tiny/grid/recommendations", params={"market": "ru"})
+        self.client.get("/api/tiny/grid/recommendations", params={"market": "ru"}, "/api/tiny/grid/recommendations")
 
-    @task(1)
+    @task(weight["/api/tiny/set_agreement"])
     def tiny_set_agreement(self):
         self.client.post("/api/tiny/set_agreement", data='agreement=1',
                          headers={'content-type': 'application/x-www-form-urlencoded'})
 
-    @task(6)
+    @task(50)
     def sapi_meta(self):
         switcher = random.randint(1, 6)
         if switcher == 1:
@@ -124,19 +133,19 @@ class IosUser01(TaskSet):
                             params={
                                 'include': '(track artist (release label))',
                                 'tracks': '90652526,115025877'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
         elif switcher == 2:
             self.client.get("/sapi/meta",
                             params={
                                 'include': '(non_music_list (podcast publisher) (abook publisher) episode)',
                                 'non_music_lists': '11'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
         elif switcher == 3:
             self.client.get("/sapi/meta",
                             params={
                                 'artists': '873552',
                                 'include': '(artist(popular-track release :first 3)(release :first 2)(related-artists :first 10))'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
         elif switcher == 4:
             choice_item = random.choice(('114739629,114189747,112858098', '78191011', '78191011,78191055,78190960',
                                          '115645279,82678166,78510394', '115645279',
@@ -146,21 +155,21 @@ class IosUser01(TaskSet):
                             params={
                                 'episodes': choice_item,
                                 'include': '(episode (podcast publisher) listened_state)'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
         elif switcher == 5:
             self.client.get("/sapi/meta",
                             params={
                                 'include': '(release (related-releases :first 10) label track artist)',
                                 'releases': '5997946'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
         elif switcher == 6:
             self.client.get("/sapi/meta",
                             params={
                                 'include': '(podcast publisher)',
                                 'podcasts': '12889455'},
-                            name='/sapi/meta (ios)')
+                            name="/sapi/meta")
 
-    @task(1)
+    @task(weight["/api/tiny/artists"])
     def tiny_artists(self):
         choice_item = random.choice((
             "40397,130059,135149",
@@ -170,9 +179,9 @@ class IosUser01(TaskSet):
         ))
         self.client.get("/api/tiny/artists",
                         params={"ids": choice_item},
-                        name='/api/tiny/artists')
+                        name="/api/tiny/artists")
 
-    @task(1)
+    @task(weight["/api/tiny/releases"])
     def tiny_releases(self):
         choice_item = random.choice((
             "3408091,7474990,10690736",
@@ -183,9 +192,9 @@ class IosUser01(TaskSet):
         ))
         self.client.get("/api/tiny/releases",
                         params={"ids": choice_item},
-                        name='/api/tiny/releases')
+                        name="/api/tiny/releases")
 
-    @task(1)
+    @task(weight["/api/tiny/tracks"])
     def tiny_tracks(self):
         switcher = random.randint(1, 2)
         if switcher == 1:
@@ -195,7 +204,7 @@ class IosUser01(TaskSet):
             ))
             self.client.get("/api/tiny/tracks",
                             params={"ids": choice_item},
-                            name='/api/tiny/tracks')
+                            name="/api/tiny/tracks")
         elif switcher == 2:
             choice_item = random.choice(("68439511,68439511",
                                          "68216761,68216765,68438945",
@@ -206,31 +215,32 @@ class IosUser01(TaskSet):
                                          ))
             self.client.get("/api/tiny/tracks",
                             params={"ids": choice_item, "include": "release"},
-                            name='/api/tiny/tracks')
+                            name="/api/tiny/tracks")
 
-    @task(1)
+    @task(weight["/api/tiny/track/stream"])
     def tiny_track_stream(self):
         choice_item = random.choice(('114690019', '114622397', '114690019', '113151575', '68439511', '46068557',
                                      '115712814', '114151709', '115386967'))
         self.client.get("/api/tiny/track/stream",
                         params={"id": choice_item, "quality": "high"},
-                        name='/api/tiny/track/stream')
+                        name="/api/tiny/track/stream")
 
-    @task(1)
+    # +web,droid
+    @task(weight["/api/tiny/musixmatch/lyrics"])
     def tiny_musixmatch_lyrics(self):
         choice_item = random.choice(('114690019', '115383915', '114622397', '113151575', '68439511', '46068557',
                                      '114151709', '115712814', '115386967'))
         self.client.get("/api/tiny/musixmatch/lyrics/",
                         params={"track_id": choice_item, "translation": "1"},
-                        name='/api/tiny/musixmatch/lyrics/')
+                        name="/api/tiny/musixmatch/lyrics")
 
-    @task(1)
+    @task(weight["/api/tiny/artists/releases"])
     def tiny_artist_id_releases(self):
         self.client.get("/api/tiny/artist/873552/releases",
                         params={"limit": "20", "offset": "0"},
                         name='/api/tiny/artist/[id]/releases')
 
-    @task(1)
+    @task(weight["/popular_tracks"])
     def tiny_popular_tracks(self):
         choice_item = random.choice(('873552'))
         self.client.get("/api/tiny/popular-tracks",
@@ -238,7 +248,7 @@ class IosUser01(TaskSet):
                         name='/api/tiny/popular-tracks')
         # /api/tiny/popular-tracks?artist=873552&limit=980&offset=20
 
-    @task(1)
+    @task(weight["/api/tiny/suggest"])
     def tiny_suggest(self):
         choice_item = random.choice(('week', 'sun', 'moon', 'girl'))
         self.client.get("/api/tiny/suggest",
@@ -246,7 +256,7 @@ class IosUser01(TaskSet):
                                 "type": "episode,playlist,artist,track,release"},
                         name='/api/tiny/suggest')
 
-    @task(1)
+    @task(weight["/sapi/search"])
     def sapi_search(self):
         choice_item = random.choice(('week', 'sun', 'moon', 'girl'))
         self.client.get("/sapi/search",
@@ -254,8 +264,8 @@ class IosUser01(TaskSet):
                                 "user_id": self.user_id},
                         name='/sapi/search')
 
-    @task(1)
+    @task(weight["/sapi/fetch/"])
     def sapi_fetch(self):
         self.client.get("/sapi/fetch/",
                         params={"include": "(track release)", "url": "/api/tiny/listen-next/?ids=&limit=10"},
-                        name='/sapi/fetch/')
+                        name="/sapi/fetch/")

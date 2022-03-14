@@ -8,6 +8,100 @@ class GQL:
 
     #------Android-------
 
+    def get_public_profile_playlists_with_fixed_covers(self, ids):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "getPublicProfilePlaylistsWithFixedCovers",
+                                        "variables": {
+                                            "ids": ids,
+                                            "first": 3
+                                        },
+                                        "query": "query getPublicProfilePlaylistsWithFixedCovers($ids: [ID!]!, $first: Int) { playlists(ids: $ids) { __typename ...PlaylistGqlFragment ftracks(first: $first) { __typename id release { __typename image { __typename ...ImageInfoGqlFragment } } } } } fragment PlaylistGqlFragment on Playlist { __typename id title searchTitle updated description image { __typename ...ImageInfoGqlFragment } tracks { __typename id } chart { __typename trackId positionChange } isPublic duration userId ...PlaylistBrandingInfoGqlFragment } fragment PlaylistBrandingInfoGqlFragment on Playlist { __typename id branded cover { __typename src } buttons { __typename title action { __typename ... on OpenUrlAction { name url fallbackUrl inWebkit auth } } } } fragment ImageInfoGqlFragment on ImageInfo { __typename src palette paletteBottom }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
+
+    def get_playlists_android(self, ids):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "getPlaylists",
+                                        "variables": {
+                                            "ids": ids
+                                        },
+                                        "query": "query getPlaylists($ids: [ID!]!) { playlists(ids: $ids) { __typename ...PlaylistGqlFragment } } fragment PlaylistGqlFragment on Playlist { __typename id title searchTitle updated description image { __typename ...ImageInfoGqlFragment } tracks { __typename id } chart { __typename trackId positionChange } isPublic duration userId ...PlaylistBrandingInfoGqlFragment } fragment PlaylistBrandingInfoGqlFragment on Playlist { __typename id branded cover { __typename src } buttons { __typename title action { __typename ... on OpenUrlAction { name url fallbackUrl inWebkit auth } } } } fragment ImageInfoGqlFragment on ImageInfo { __typename src palette paletteBottom }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
+
+    def wave_content(self):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "waveContent",
+                                        "variables": {
+                                            "input": {
+                                                "waveId": "3",
+                                                "limit": 5,
+                                                "localtime": "2022-03-10T15:20:50.199+04:00"
+                                            }
+                                        },
+                                        "query": "query waveContent($input: WaveContentInput!) { wave { __typename waveContent(contentInput: $input) { __typename itemId itemType compilationId sequence skippable content { __typename ... on Track { id } ... on Episode { id } ... on Chapter { id } ... on LifestyleNews { ...LifestyleNewsGqlFragment } ... on Digest { ...DigestGqlFragment } ... on SberZvukDigest { ...SberZvukDigestGqlFragment } ... on Horoscope { ...HoroscopeGqlFragment } ... on Jingle { ...JingleGqlFragment } ... on Teaser { ...TeaserGqlFragment } } } } } fragment LifestyleNewsGqlFragment on LifestyleNews { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate } fragment ImageInfoGqlFragment on ImageInfo { __typename src palette paletteBottom } fragment DigestGqlFragment on Digest { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate } fragment SberZvukDigestGqlFragment on SberZvukDigest { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate } fragment HoroscopeGqlFragment on Horoscope { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate } fragment JingleGqlFragment on Jingle { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate } fragment TeaserGqlFragment on Teaser { __typename id title streamId description image { __typename ...ImageInfoGqlFragment } duration availability author explicit publicationDate referenceItemId referenceItemType }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
+
+    def available_waves(self):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "availableWaves",
+                                        "variables": {},
+                                        "query": "query availableWaves { wave { __typename availableWaves { __typename ...WaveGqlFragment } } } fragment WaveGqlFragment on Wave { __typename id title description image { __typename src palette paletteBottom } }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
+
+    def hidden_content_types(self):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "hiddenContentTypes",
+                                        "variables": {},
+                                        "query": "query hiddenContentTypes { wave { __typename hiddenContentTypes { __typename ...HiddenContentTypesResponseGqlFragment } } } fragment HiddenContentTypesResponseGqlFragment on HiddenContentTypesResponse { __typename hiddenContent { __typename ...HiddenContentTypesGqlFragment } onboarded } fragment HiddenContentTypesGqlFragment on HiddenContentTypes { __typename digest horoscope lifestyleNews teaser }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
+
+    def get_profiles(self, ids):
+        response = self.client.post("/api/v1/graphql",
+                                    json={
+                                        "operationName": "getProfiles",
+                                        "variables": {"ids": ids},
+                                        "query": "query getProfiles($ids: [ID!]!) { profiles(ids: $ids) { __typename ...ProfileGqlFragment } } fragment ProfileGqlFragment on Profile { __typename id type verified name description image { __typename src } playlists { __typename id } additionalData { __typename ... UserProfileDataGqlFragment ... CompanyProfileDataGqlFragment } } fragment UserProfileDataGqlFragment on UserProfileData { __typename id } fragment CompanyProfileDataGqlFragment on CompanyProfileData { __typename site cover { __typename src } banner { __typename srcMobile srcWeb link } }"
+                                    },
+                                    headers={
+                                        'Content-Type': 'application/json'
+                                    },
+                                    name='/api/v1/graphql'
+                                    )
+        return response
 
     def collection_ids(self):
         response = self.client.post("/api/v1/graphql",
@@ -19,7 +113,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (droid collectionIds)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -47,7 +141,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios GetWaveContent)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -76,7 +170,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios updateHiddenContenTypes)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -108,7 +202,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios GetWaveOnboardingButtons)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -140,7 +234,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios GetWaveHiddenContentTypes)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -171,7 +265,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios GetAvailableWaves)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -194,7 +288,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios GetMeta)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -225,7 +319,7 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios getDislikedCollection)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -286,13 +380,11 @@ class GQL:
                                     headers={
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios getCollectionData)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
     def profiles(self, ids):
-        # ["746246625"] ["717993527"]
-        # ["506527198", "514072620", "386097314", "438615003", "331771699", "388922123", "371954642", "729177830", "420633244", "669505078", "471759800", "438616750"]
         response = self.client.post("/api/v1/graphql",
                                     json={
                                         'operationName': 'Profiles',
@@ -342,7 +434,7 @@ class GQL:
                                         # 'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (ios Profiles)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -436,7 +528,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (getTracks)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -463,7 +555,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (playlists)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -489,7 +581,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (collection)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -515,7 +607,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (hiddenCollection)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -561,7 +653,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (userCollection)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -591,7 +683,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (getAllHiddenCollection)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -621,7 +713,7 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (profile)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
@@ -684,520 +776,8 @@ class GQL:
                                         'X-Visitor-Country-Code': country_code,
                                         'Content-Type': 'application/json'
                                     },
-                                    name='/api/v1/graphql (getPlaylists)'
+                                    name='/api/v1/graphql'
                                     )
         return response
 
-    def get_playlists_ftracks(self, token, ids, first, country_code="ru"):
-        headers = {"X-Auth-token": token, "X-Visitor-Country-Code": country_code}
-        query = """
-        query {
-            getPlaylists(ids:%s) {
-                id,
-                title,
-                userId,
-                shared,
-                description,
-                updated
-                image {
-                    src,
-                    palette,
-                    paletteBottom
-                },
-                duration,
-                isDeleted,
-                isPublic,
-                collectionLastModified,
-                chart {
-                    trackId,
-                    positionChange
-                },
-                ftracks(first: %i){
-                    id,
-                    title,
-                    image{
-                        src,
-                        palette,
-                        paletteBottom
-                    }
-                }
-            }
-        }
-        """ % (str(ids), first)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
 
-    def get_artist(self, ids, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        query {
-            getArtists(ids:%s) {
-                id,
-                title,
-                searchTitle,
-                description,
-                hasPage,
-                collectionLastModified
-                image {
-                    src,
-                    palette,
-                    paletteBottom
-                },
-                secondImage {
-                    src,
-                    palette,
-                    paletteBottom
-                },
-                animation {
-                    artistId,
-                    image,
-                    effect
-                    background {
-                        image,
-                        gradient,
-                        type,
-                        color
-                    }
-                },
-                releases {
-                    id,
-                    title,
-                    date
-                },
-                popularTracks {
-                    id,
-                    title,
-                    collectionLastModified
-                },
-                relatedArtists {
-                    id,
-                    title,
-                    description
-                }
-            }
-        }
-        """ % str(ids)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_add(self, id_, item_type, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation {
-            collection {
-                addItem(id:%s, type:%s)
-            }
-        }
-        """ % (str(id_), item_type)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def get_podcast(self, ids, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        query {
-            getPodcasts(ids:%s) {
-                id,
-                title,
-                description,
-                link,
-                availability,
-                completed,
-                updatedDate,
-                explicit,
-                episodes {
-                    id,
-                    podcast {
-                        id,
-                        title,
-                        description
-                    },
-                    title,
-                    description,
-                    image {
-                        src,
-                        palette,
-                        paletteBottom
-                    },
-                    collectionLastModified
-                },
-                image {
-                    src,
-                    palette,
-                    paletteBottom
-                },
-                authors {
-                    id,
-                    name
-                }
-            }
-        }""" % str(ids)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def get_episode(self, ids, token, season):
-        headers = {"X-Auth-token": token}
-        query = """
-        query {
-            getEpisodes(ids:%s, seasons:%s){
-                id,
-                title,
-                description,
-                link,
-                number,
-                publicationDate,
-                trackId,
-                duration,
-                availability,
-                explicit,
-                collectionLastModified,
-                image{
-                  src,
-                  palette,
-                  paletteBottom
-                }
-                podcast{
-                  id,
-                  title,
-                  image{
-                    src,
-                    palette,
-                    paletteBottom
-                  }
-                }
-                season{
-                  id,
-                  seasonNumber,
-                  name
-                }
-            }
-        }""" % (str(ids), season)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def get_track(self, ids, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        query{
-            getTracks(ids:%s){
-                id,
-                condition,
-                title,
-                searchTitle,
-                title,
-                position,
-                duration,
-                artistTemplate,
-                explicit,
-                lyrics,
-                hasFlac,
-                collectionLastModified
-                availability
-                image{
-                    src,
-                    palette,
-                    paletteBottom
-                },
-                artists{
-                    id,
-                    title,
-                    image{
-                        src,
-                        palette,
-                        paletteBottom
-                    }
-                },
-                release{
-                    id,
-                    title,
-                    availability,
-                    image{
-                        src,
-                        palette,
-                        paletteBottom
-                    }
-                }
-            }
-        }
-        """ % str(ids)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def get_release(self, ids, token):
-        headers = {"X-Auth-token": token}
-        query = """
-            query{
-                getReleases(ids:%s){
-                    id,
-                    title,
-                    explicit,
-                    availability,
-                    date,
-                    artistTemplate,
-                    searchTitle,
-                    type,
-                    collectionLastModified
-                    image{
-                        src,
-                        palette,
-                        paletteBottom
-                    }
-                    label{
-                        id,
-                        title,
-                        searchTitle,
-                        description,
-                        image{
-                            src,
-                            palette,
-                            paletteBottom
-                        },
-                        hasImage
-                    },
-                    related{
-                        id,
-                        title,
-                        searchTitle,
-                        availability,
-                        explicit,
-                        image{
-                            src,
-                            palette,
-                            paletteBottom
-                        }
-                    },
-                    genres{
-                        id,
-                        parent{
-                            id,
-                            shortName,
-                            sortOrder,
-                            visible,
-                            name,
-                            rname
-                        },
-                        name,
-                        shortName,
-                        rname,
-                        sortOrder,
-                        visible
-                    },
-                tracks{
-                    id,
-                    availability,
-                    title,
-                    explicit,
-                    position,
-                    artists{
-                        id,
-                        title
-                    }
-                },
-                artists{
-                    id,
-                    title
-                }
-            }
-            }
-            """ % str(ids)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_create(self, id_, name, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                create(name: %s, items: [{ type: track, item_id:%s}])
-            }
-        }
-        """ % (name, id_)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_create_list(self, id_item, id_item2, id_item3, name, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                create(name: %s, items: [{ type: track, item_id:%s}, { type: track, item_id:%s}, { type: track, item_id:%s} ])
-            }
-        }
-        """ % (name, id_item, id_item2, id_item3)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_add(self, id_, item_type, item_id, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                addItems(id:%s, items:[{type:%s, item_id:%s}])
-            }
-        }
-        """ % (str(id_), item_type, str(item_id))
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_reorder(self, id_, id_item, token, id_item2, id_item3):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                reorder(id:%s, items:[{
-                    type:track,
-                    item_id:%s
-                    },
-                    {
-                    type: track,
-                    item_id: %s
-                    },
-                    {
-                    type: track,
-                    item_id: %s
-                    }
-                ])
-            }
-        }
-        """ % (str(id_), id_item, id_item2, id_item3)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_update(self, id_, item_id, name, is_public, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                update(id: %s, name: %s, items:[{
-                type:track, item_id: %s}], isPublic:%s)
-            }
-        }
-        """ % (str(id_), name, item_id, is_public)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_setpublic(self, id_, token, is_public):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                setPublic(id: %s, isPublic: %s)
-            }
-        }
-        """ % (str(id_), is_public)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_rename(self, id_, token, name):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                rename(id: %s, name: %s)
-            }
-        }
-        """ % (id_, name)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def mutation_playlist_delete(self, id_, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        mutation{
-            playlist {
-                delete(id: %s)
-            }
-        }
-        """ % str(id_)
-        return self.client.post("/graphql/", headers=headers, json={'query': query})
-
-    def get_collection(self, token):
-        headers = {"X-Auth-token": token}
-        query = """
-        query {
-            collection {
-                tracks {
-                    id,
-                    title,
-                    searchTitle,
-                    duration,
-                    collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                    }
-                }
-            releases {
-                id,
-                title,
-                searchTitle,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                    }
-            }
-            artists {
-                id,
-                title,
-                searchTitle,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            }
-            podcasts {
-                id,
-                title,
-                description,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            },
-            episodes {
-                id,
-                title,
-                description,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            },
-            chapters {
-                id,
-                title,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            },
-            books {
-                id,
-                title,
-                description,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            },
-            playlists {
-                id,
-                description,
-                title,
-                shared,
-                isPublic,
-                isDeleted,
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            },
-            profiles
-            {
-                id,
-                name,
-                description,
-                isPublicCollection
-                collectionItemData{
-                        itemStatus,
-                        likesCount,
-                        lastModified
-                }
-            }
-        }
-        }
-        """
-        return self.client.post("/graphql/", headers=headers, json={'query': query})

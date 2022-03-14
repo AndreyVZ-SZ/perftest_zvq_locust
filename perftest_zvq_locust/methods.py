@@ -9,6 +9,15 @@ def log_info(response):
     logging.info(response.json())
 
 
+def check_response(response):
+    if response.status_code != 200:
+        logging.info("============ " + str(response.status_code) + " ==========")
+        logging.info(response.request.headers)
+        logging.info(response.request.body)
+        logging.info("-----------------------------------")
+        logging.info(response.json())
+
+
 def headers_set_token(self, token):
     self.token = token
     self.client.headers.update({'x-auth-token': self.token,
