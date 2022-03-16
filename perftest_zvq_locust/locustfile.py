@@ -26,6 +26,7 @@ class FlowException(Exception):
 class ZvukUser(HttpUser):
     host = "https://sber-zvuk.com"
     wait_time = between(0.3, 1)
+    # tasks = [WebUser01]
     tasks = {
         WebUser01: 1,
         IosUser01: 1,
@@ -42,15 +43,13 @@ class StepLoadShape(LoadTestShape):
         spawn_rate -- Users to stop/start per second at every step
         time_limit -- Time limit in seconds
     """
-
     step_time = 10
-    step_load = 6
-    spawn_rate = 6
-    time_limit = 120
+    step_load = 12
+    spawn_rate = 3
+    time_limit = 1200
 
     def tick(self):
         run_time = self.get_run_time()
-
         if run_time > self.time_limit:
             return None
 

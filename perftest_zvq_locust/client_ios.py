@@ -27,9 +27,11 @@ def ios_login(self):
     time.sleep(1)
     res = self.client.post("/api/tiny/login/email",
                            params={'register': '1'},
-                           data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
+                           #data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
+                           data=f'email={get_email(self.vuser_id)}&password=stresstest&active=true',
                            headers={'content-type': 'application/x-www-form-urlencoded'},
                            name="/api/tiny/login/email")
+    logging.info(res.request.body)
     check_response(res)
 
     headers_ios_set_token(self, res.json()['result']['token'])
@@ -118,7 +120,7 @@ class IosUser01(TaskSet):
 
     @task(weight["/api/tiny/grid/recommendations"])
     def tiny_grid_recommendations(self):
-        self.client.get("/api/tiny/grid/recommendations", params={"market": "ru"}, "/api/tiny/grid/recommendations")
+        self.client.get("/api/tiny/grid/recommendations", params={"market": "ru"}, name="/api/tiny/grid/recommendations")
 
     @task(weight["/api/tiny/set_agreement"])
     def tiny_set_agreement(self):

@@ -1,6 +1,7 @@
 import logging
 import random
 import time
+import json
 
 from locust import TaskSet, task
 # from locust_plugins.csvreader import CSVReader
@@ -26,7 +27,8 @@ def web_login(self):
     self.client.get("/api/tiny/login/sber/get_params/")
     time.sleep(1)
     res = self.client.post("/api/login_or_register",
-                           data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
+                           # data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
+                           data=f'email={get_email(self.vuser_id)}&password=stresstest&active=true',
                            headers={'content-type': 'application/x-www-form-urlencoded'})
     check_response(res)
     headers_set_token(self, res.json()['result']['sauth']['value'])
@@ -46,8 +48,6 @@ class WebUser01(TaskSet):
         self.vuser_id = ''
         self.token = ''
         self.user_id = ''
-        # self.gql_switcher = 0
-        # self.grid_switcher = 0
 
     def setup(self):
         """1 раз при старте"""
@@ -64,6 +64,10 @@ class WebUser01(TaskSet):
 
     def on_stop(self):
         self.client.post("/api/tiny/logout")
+
+    # @task
+    # def pass_task(self):
+    #     pass
 
     @task(weight["/api/ads/next/v2"])
     def ads_next_v2(self):

@@ -18,6 +18,13 @@ def check_response(response):
         logging.info(response.json())
 
 
+def get_email(vuser_id):
+    i = vuser_id % 1000
+    if i == 0:
+        return "perf_zvquser01000%40zvqmail.com"
+    return f"perf_zvquser{i:05}%40zvqmail.com"
+
+
 def headers_set_token(self, token):
     self.token = token
     self.client.headers.update({'x-auth-token': self.token,

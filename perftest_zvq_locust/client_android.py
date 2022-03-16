@@ -21,7 +21,7 @@ def android_login(self):
     time.sleep(1)
     res = self.client.post("/api/tiny/login/email",
                            params={'register': 'true'},
-                           data=f'email=perf_zvquser{self.vuser_id:05}%40zvqmail.com&password=stresstest&active=true',
+                           data=f'email={get_email(self.vuser_id)}&password=stresstest&active=true',
                            headers={'content-type': 'application/x-www-form-urlencoded'},
                            name="/api/tiny/login/email")
     headers_ios_set_token(self, res.json()['result']['token'])
