@@ -1,0 +1,5 @@
+FROM locustio/locust
+
+EXPOSE 8089
+
+CMD ["-f /mnt/locust/locustfile.py"]

@@ -116,7 +116,7 @@ class WebUser01(TaskSet):
         switcher = random.randint(0, len(grid_params)-1)
         self.client.get("/sapi/grid", params=grid_params[switcher], name="/sapi/grid")
 
-    @task(50)
+    @task(weight["/sapi/meta"])
     def sapi_meta(self):
         switcher = random.randint(1, 2)
         if switcher == 1:
@@ -182,7 +182,7 @@ class WebUser01(TaskSet):
                         params={"query": "rain", "limit": "2", "type": "artist,release,playlist,track,episode"},
                         name="/api/tiny/suggest")
 
-    @task(200)
+    @task(weight["/api/v2/user/library"])
     def user_library(self):
         self.client.get("/api/user/library", params={"return_shared_playlists": "true", "username": "zvooqplay"},
                             name='/api/user/library')

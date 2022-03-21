@@ -44,7 +44,7 @@ class StepLoadShape(LoadTestShape):
         time_limit -- Time limit in seconds
     """
     step_time = 10
-    step_load = 12
+    step_load = 3#12
     spawn_rate = 3
     time_limit = 1200
 

@@ -31,11 +31,11 @@ def ios_login(self):
                            data=f'email={get_email(self.vuser_id)}&password=stresstest&active=true',
                            headers={'content-type': 'application/x-www-form-urlencoded'},
                            name="/api/tiny/login/email")
-    logging.info(res.request.body)
+    # logging.info(res.request.body)
     check_response(res)
 
     headers_ios_set_token(self, res.json()['result']['token'])
-    logging.info(str(res.json()))
+    # logging.info(str(res.json()))
     res = self.client.get("/api/v2/tiny/profile/")
     self.user_id = str(res.json()['result']['profile']['id'])
 
@@ -127,7 +127,7 @@ class IosUser01(TaskSet):
         self.client.post("/api/tiny/set_agreement", data='agreement=1',
                          headers={'content-type': 'application/x-www-form-urlencoded'})
 
-    @task(50)
+    @task(weight["/sapi/meta"])
     def sapi_meta(self):
         switcher = random.randint(1, 6)
         if switcher == 1:
